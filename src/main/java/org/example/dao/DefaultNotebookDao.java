@@ -114,6 +114,7 @@ public class DefaultNotebookDao implements NotebookDao {
     public void dropTable() throws SQLException {
         Statement statement = JDBCConfig.getConnection().createStatement();
         statement.executeUpdate("DROP TABLE notebooks");
+        log.info("Class DefaultNotebookDao: Drop table notebooks");
         JDBCConfig.closeConnection();
     }
 

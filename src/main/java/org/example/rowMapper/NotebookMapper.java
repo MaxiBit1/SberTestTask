@@ -7,6 +7,7 @@ import org.example.model.NotebookModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
 public class NotebookMapper {
     public static NotebookModel makeNotebook(ResultSet rs) throws SQLException {
         return new NotebookModel(rs.getLong("id"),

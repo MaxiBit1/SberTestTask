@@ -1,12 +1,11 @@
-package org.example.model;
+package org.example.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class NotebookModel {
-    private long id;
+public class NotebookDto {
     private String modelName;
     private String companyName;
     private int sizeRam;

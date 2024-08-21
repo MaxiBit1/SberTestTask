@@ -8,6 +8,9 @@ import org.example.exception.ParametersException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Класс-реализатор интерфеса NotebookService
+ */
 @Slf4j
 public class DefaultNotebookService implements NotebookService {
 
@@ -32,8 +35,8 @@ public class DefaultNotebookService implements NotebookService {
 
     @Override
     public List<NotebookDto> selectNotebooksWithParameters(String parameters, String operator, String value) throws SQLException {
-        parameters = checkParameters(parameters);
-        value = addValueQuotes(parameters,value);
+        parameters = changeNameParameters(parameters);
+        value = addValueQuotes(parameters, value);
         log.info("DefaultNotebookService class: Get notebooks with parameters {}, operator {}, value {}", parameters, operator, value);
         return notebookDao.selectNotebooksWithParameters(parameters, operator, value);
     }
@@ -47,8 +50,8 @@ public class DefaultNotebookService implements NotebookService {
 
     @Override
     public void deleteNotebook(String parameters, String operator, String value) throws SQLException {
-        parameters = checkParameters(parameters);
-        value = addValueQuotes(parameters,value);
+        parameters = changeNameParameters(parameters);
+        value = addValueQuotes(parameters, value);
         log.info("DefaultNotebookService class: Delete data from table with parameters {} {} {}", parameters, operator, value);
         notebookDao.deleteNotebook(parameters, operator, value);
     }
@@ -59,7 +62,13 @@ public class DefaultNotebookService implements NotebookService {
         notebookDao.dropTable();
     }
 
-    private String checkParameters(String parameters) {
+    /**
+     * Метод замены на название аттрибута из таблицы
+     *
+     * @param parameters - аттрибут
+     * @return - измененный аттрибут
+     */
+    private String changeNameParameters(String parameters) {
         switch (parameters) {
             case "modelName" -> {
                 return "model_name";
@@ -83,11 +92,18 @@ public class DefaultNotebookService implements NotebookService {
         }
     }
 
+    /**
+     * Метод добавление ковычек к значению строковых аттрибутов
+     *
+     * @param parameters - аттрибут
+     * @param value      - значение
+     * @return - изменненый или не изменненный аттрибут
+     */
     private String addValueQuotes(String parameters, String value) {
         if (parameters.equals("model_name")
                 || parameters.equals("company_name")
                 || parameters.equals("resolution")) {
-           return "'" + value + "'";
+            return "'" + value + "'";
         }
         return value;
     }

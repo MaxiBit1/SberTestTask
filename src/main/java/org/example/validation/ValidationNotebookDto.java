@@ -4,9 +4,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.dto.NotebookDto;
 import org.example.exception.ValidationException;
 
+/**
+ * Класс валидации модели notebookDto
+ */
 @Slf4j
 public class ValidationNotebookDto {
 
+    /**
+     * Метод проверки валидации
+     *
+     * @param notebookDto - модель DTO
+     */
     public static void validationDto(NotebookDto notebookDto) {
         if (notebookDto.getModelName().isEmpty() || notebookDto.getModelName().isBlank()) {
             log.error("ValidationNotebookDto class: Название модели пустое/его нет");

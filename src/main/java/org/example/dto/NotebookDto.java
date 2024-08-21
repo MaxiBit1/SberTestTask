@@ -3,6 +3,9 @@ package org.example.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * Класс модель выдаваемых ноутбуков
+ */
 @Data
 @AllArgsConstructor
 public class NotebookDto {

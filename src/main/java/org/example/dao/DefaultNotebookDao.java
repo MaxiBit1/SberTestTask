@@ -12,6 +12,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс реализации интерфейса NotebookDao
+ */
 @Slf4j
 public class DefaultNotebookDao implements NotebookDao {
 
@@ -118,6 +121,14 @@ public class DefaultNotebookDao implements NotebookDao {
         JDBCConfig.closeConnection();
     }
 
+    /**
+     * Класс создания условия
+     *
+     * @param parameters - аттрибут
+     * @param operator   - оператор для условия
+     * @param value      - значение аттрибута
+     * @return - строка для условия в запрос
+     */
     private String createWhere(String parameters, String operator, String value) {
         StringBuilder stringBuilder = new StringBuilder();
         if (parameters.isEmpty() || operator.isEmpty() || value.isEmpty()) {

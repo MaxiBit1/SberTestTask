@@ -1,16 +1,18 @@
 package org.example.dao;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.config.JDBCConfig;
 import org.example.dto.NotebookDto;
 import org.example.rowMapper.NotebookMapper;
+import org.example.validation.ValidationNotebookDto;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class DefaultNotebookDao implements NotebookDao {
 
     @Override
@@ -24,7 +26,8 @@ public class DefaultNotebookDao implements NotebookDao {
                 "resolution VARCHAR(20)," +
                 "price DECIMAL)";
         Statement statement = JDBCConfig.getConnection().createStatement();
-        int result = statement.executeUpdate(sqlQuery);
+        statement.executeUpdate(sqlQuery);
+        log.info("Class DefaultNotebookDao: create table notebooks");
         JDBCConfig.closeConnection();
 
     }
@@ -42,6 +45,7 @@ public class DefaultNotebookDao implements NotebookDao {
         while (resultSet.next()) {
             listDto.add(NotebookMapper.makeNotebookDto(resultSet));
         }
+        log.info("Class DefaultNotebookDao: Get all notebooks");
         JDBCConfig.closeConnection();
         return listDto;
     }
@@ -61,11 +65,13 @@ public class DefaultNotebookDao implements NotebookDao {
             return List.of(null);
         }
         JDBCConfig.closeConnection();
+        log.info("Class DefaultNotebookDao: Get notebooks with parameters {}, operator {}, value {}", parameters, operator, value);
         return listDto;
     }
 
     @Override
     public void addNotebook(NotebookDto notebookDto) throws SQLException {
+        ValidationNotebookDto.validationDto(notebookDto);
         StringBuilder sqlQuery = new StringBuilder("INSERT INTO notebooks(model_name, company_name, size_ram, size_pzu, resolution, price) ");
         sqlQuery.append("VALUES(")
                 .append("'")
@@ -81,13 +87,15 @@ public class DefaultNotebookDao implements NotebookDao {
                 .append(notebookDto.getSizePZU())
                 .append(",")
                 .append("'")
-                .append(notebookDto.getCompanyName())
+                .append(notebookDto.getResolution())
                 .append("'")
                 .append(",")
                 .append(notebookDto.getPrice())
                 .append(")");
         Statement statement = JDBCConfig.getConnection().createStatement();
         statement.executeUpdate(sqlQuery.toString());
+        log.info("Class DefaultNotebookDao: Insert notebook with data: modelName - {}, company_name - {}, sizeRam - {}, sizePZU - {}, resolution - {}, price - {}",
+                notebookDto.getModelName(), notebookDto.getCompanyName(), notebookDto.getSizeRam(), notebookDto.getSizePZU(), notebookDto.getResolution(), notebookDto.getPrice());
         JDBCConfig.closeConnection();
     }
 
@@ -98,6 +106,7 @@ public class DefaultNotebookDao implements NotebookDao {
         sqlQueryDelete.append(sqlWhere);
         Statement statement = JDBCConfig.getConnection().createStatement();
         statement.executeUpdate(sqlQueryDelete.toString());
+        log.info("Class DefaultNotebookDao: Delete data from table with parameters {} {} {}", parameters, operator, value);
         JDBCConfig.closeConnection();
     }
 
@@ -110,7 +119,7 @@ public class DefaultNotebookDao implements NotebookDao {
 
     private String createWhere(String parameters, String operator, String value) {
         StringBuilder stringBuilder = new StringBuilder();
-        if (parameters.isEmpty()) {
+        if (parameters.isEmpty() || operator.isEmpty() || value.isEmpty()) {
             return "1=1";
         }
         return stringBuilder
